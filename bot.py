@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-token = 'NzAzMTk2MDQwMTQ0MzU1MzYx.XqP8nQ.LDsHzn9FLwFMYdeCR4OpdPRbG4I'
+token = 'TOKEN'
 
 #client = commands.AutoShardedBot(self_bot=False, command_prefix=">", case_insensitive=True, shard_count=2)
 client = commands.Bot(command_prefix = '>', case_insensitive = True)
