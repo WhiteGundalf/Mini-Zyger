@@ -1,5 +1,8 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import has_permissions
+from discord.ext.commands.cooldowns import BucketType
+from discord.ext.commands.errors import CommandOnCooldown, MissingPermissions, CheckFailure
 import json
 import datetime
 import time
@@ -10,7 +13,9 @@ class Polls(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(name="poll", description="creates a poll", usage="title; amount of options; option1; option2; option3(etc.)(max = 10); ExpirationTime(defaults to 12h)(formatted like [2h 32m]) ")
+    @commands.command(name="poll", description="creates a poll", pass_context=True, usage="title; amount of options; option1; option2; option3(etc.)(max = 10); ExpirationTime(defaults to 12h)(formatted like [2h 32m]) ")
+    @commands.cooldown(1, 60, BucketType.member)
+    @has_permissions(administrator=True)
     async def poll(self, ctx):
         if not ctx.message.author.bot:
             try:
@@ -46,11 +51,12 @@ class Polls(commands.Cog):
                             minutes = int(ListExpiration[1].strip("m"))
                             TotalTime = hours * 60 * 60 + minutes * 60
                     else:
-                        await ctx.channel.send("invalid expiration time, did you format it like 'xh ym'? [ex. 2h 30m]")
+                        await ctx.channel.send("invalid expiration time, did you format it like '[hours]h [minutes]m'? [ex. 2h 30m]")
                         return
                 except:
-                    await ctx.channel.send("invalid expiration time, did you format it like 'Xh Ym'? [ex. 2h 30m]")
+                    await ctx.channel.send("invalid expiration time, did you format it like '[hours]h [minutes]m'? [ex. 2h 30m]")
                     return
+                #await ctx.message.delete()
                 if TotalTime == 0:
                     TotalTime = 12 * 60 * 60
                     hours = 12
@@ -89,7 +95,25 @@ class Polls(commands.Cog):
                 await ctx.channel.send(f"<@!{ctx.message.author.id}>, the poll has finished.")
 
             except Exception as e:
-                await ctx.channel.send("Error, did you use the correct format? (>help Polls for help)")
+                await ctx.channel.send("Error, did you use the correct format? (>help Polls for more info)")
+    @poll.error
+    async def poll_error(obj, ctx, error):
+        if isinstance(error, CommandOnCooldown):
+            await ctx.channel.send(f"That command is on a cooldown, try again after **{round(error.retry_after, 2)}s**")
+        elif isinstance(error, MissingPermissions):
+            ToSend = ''
+            for i in error.missing_perms:
+                if error.missing_perms[0] == i:
+                    ToSend += str(i)
+                else:
+                    ToSend += ', ' + str(i)
+            if len(error.missing_perms) == 1:
+                await ctx.channel.send(f"You are missing the following perm: **{ToSend}**")
+            else:
+                await ctx.channel.send(f"You are missing the following perms: **{ToSend}**")
+
+
+
 
 
 def setup(client):
