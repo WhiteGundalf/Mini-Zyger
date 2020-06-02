@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-token = 'NzAzMTk2MDQwMTQ0MzU1MzYx.XtO6uA.ho14tqyP_36KIgB996r57ebH1HU'
+token = 'NzE2NjQwNDgzNDcxOTE3MTc2.XtPCfw.rx_xDnwTIgoVxQUIsriKj6SBTRw'
 
 def get_prefix(client, message):
     prefixes = ['>']  # sets the prefixes, u can keep it as an array of only 1 item if you need only one prefix
@@ -11,8 +11,8 @@ def get_prefix(client, message):
     return commands.when_mentioned_or(*prefixes)(client, message)
 
 #client = commands.AutoShardedBot(self_bot=False, command_prefix=">", case_insensitive=True, shard_count=2)
-client = commands.Bot(command_prefix = get_prefix, case_insensitive = True)
-cogs = ['cogs.basic']
+client = commands.Bot(command_prefix = get_prefix, owner_id=307187938205237250, case_insensitive = True)
+cogs = ['cogs.basic', 'cogs.info', 'cogs.DiscordPoll', 'cogs.Listeners', 'cogs.joke']
 
 @client.event
 async def on_ready():
