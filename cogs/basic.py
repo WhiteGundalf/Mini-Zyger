@@ -41,10 +41,10 @@ class Basic(commands.Cog):
     def __init__(self, client):
         self.client = client
     
-    @commands.Cog.listener()
-    async def on_message_edit(self, old_message, new_message):
-    	print(old_message.content)
-    	print(new_message.content)
+    #@commands.Cog.listener()
+    #async def on_message_edit(self, old_message, new_message):
+    #	print(old_message.content)
+    #	print(new_message.content)
 
     @commands.command(name = 'ping', description = 'basic ping command lol', aliases = ['p'])
     async def ping(self, ctx):
@@ -62,7 +62,7 @@ class Basic(commands.Cog):
         color_list = [c for c in colors.values()]
         help_embed = discord.Embed(
             title='Help',
-            color=random.choice(color_list)
+            color=0x9B59B6
         )
         help_embed.set_thumbnail(url=self.client.user.avatar_url)
         help_embed.set_footer(
@@ -78,11 +78,14 @@ class Basic(commands.Cog):
         if cog == 'all':
             for cog in cogs:
                 # Get a list of all commands under each cog
-
+                # Ex. Cog name: Basic
                 cog_commands = self.client.get_cog(cog).get_commands()
+                if cog_commands == []:
+                  continue
                 commands_list = ''
                 for comm in cog_commands:
                     commands_list += f'**{comm.name}** - *{comm.description}*\n'
+
 
                 # Add the cog's details to the embed.
 
@@ -90,9 +93,7 @@ class Basic(commands.Cog):
                     name=cog,
                     value=commands_list,
                     inline=False
-                ).add_field(
-                    name='\u200b', value='\u200b', inline=False
-                )
+                ).add_field(name='\u200b', value='\u200b', inline=False)
 
                 # Also added a blank field '\u200b' is a whitespace character.
             pass
@@ -101,7 +102,6 @@ class Basic(commands.Cog):
             # If the cog was specified
 
             lower_cogs = [c.lower() for c in cogs]
-
             # If the cog actually exists.
             if cog.lower() in lower_cogs:
 
@@ -137,7 +137,7 @@ class Basic(commands.Cog):
                 await ctx.send('Invalid cog specified.\nUse `help` command to list all cogs.')
                 return
 
-        await ctx.send(embed=help_embed)
+        await ctx.send(embed=help_embed, delete_after=30)
         
         return
 

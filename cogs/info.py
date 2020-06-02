@@ -9,7 +9,7 @@ class Info(commands.Cog):
 	async def binfo(self, ctx):
 		InfoEmbed = discord.Embed(title="__MiniZyger Info__", color=0x9B59B6, inline=False)
 		InfoEmbed.add_field(name="\u200b", value=f"`Owner:` `therealdaneel#7028`, <@!307187938205237250>", inline=False)
-		InfoEmbed.set_footer(text=f"requested by {ctx.message.author}")
+		InfoEmbed.set_footer(text=f"requested by {ctx.message.author}", icon_url=ctx.message.author.avatar_url)
 		InfoEmbed.set_thumbnail(url=self.client.user.avatar_url)
 		InfoEmbed.add_field(name="\u200b", value="`Made For:` `Zyger,` [__Youtube Channel Here__](https://www.youtube.com/channel/UCvYUyKg7wDj760PippmWhig)")
 
@@ -29,10 +29,33 @@ class Info(commands.Cog):
 			for role in i.roles:
 				if role.id == 671921944962138154:
 					BotDevCounter += 1
-		GuildEmbed.add_field(name="\u200b", value=f"`Bot Devs:` `{BotDevCounter}`")
+		GuildEmbed.add_field(name="\u200b", value=f"`Bot Devs:` `{BotDevCounter}`", inline=False)
 		GuildEmbed.set_thumbnail(url=ctx.guild.icon_url)
-		GuildEmbed.set_footer(text=f"requested by {ctx.message.author}", icon_url=self.client.user.avatar_url)
+		GuildEmbed.set_footer(text=f"requested by {ctx.message.author}", icon_url=ctx.message.author.avatar_url)
 		await ctx.channel.send(embed=GuildEmbed)
+
+	@commands.command(name="role_stats", description="Displays info about a specified role", aliases=["rinfo", "roleinfo"], usage="role")
+	async def role_info(self, ctx, *, rolename=None):
+		if rolename == None:
+			await ctx.channel.send("invalid role name")
+			return
+		Role=None
+		for i in ctx.guild.roles:
+			if i.name == rolename:
+				Role = i
+		if Role == None:
+			await ctx.channel.send("invalid role name")
+			return
+		RoleEmbed = discord.Embed(title=f"{rolename} Stats", color=Role.color, inline=False)
+		RoleEmbed.add_field(name="\u200b", value=f"`Role ID:` `{Role.id}`", inline=False)
+		RoleEmbed.add_field(name="\u200b", value=f"`Role Color:` `{Role.color}`", inline=False)
+		#RoleEmbed.add_field(name="\u200b", value=f"Role Perms: {Role.permissions}", inline=False)
+		RoleEmbed.add_field(name="\u200b", value=f"`Member with Role:` `{len(Role.members)}`", inline=False)
+		RoleEmbed.add_field(name="\u200b", value=f"`Created At:` `{Role.created_at}`", inline=False)
+		RoleEmbed.set_thumbnail(url=self.client.user.avatar_url)
+		RoleEmbed.set_footer(text=f"requested by {ctx.message.author}", icon_url= ctx.message.author.avatar_url)
+		await ctx.channel.send(embed=RoleEmbed)
+
 
 
 
